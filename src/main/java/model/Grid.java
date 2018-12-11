@@ -119,7 +119,7 @@ public class Grid implements Iterable<Cell> {
         } else {
             int aliveNeighbours = countAliveNeighbours(rowIndex, columnIndex);
             if (aliveNeighbours == 2 || aliveNeighbours == 3)
-                return getNewCellState(rowIndex, columnIndex);
+                return getCell(rowIndex, columnIndex).getState();
         }
         return CellState.DEAD;
     }
@@ -201,8 +201,9 @@ public class Grid implements Iterable<Cell> {
                 nbBlueNeighbours++;
             }
         }
-        if (nbRedNeighbours >= nbBlueNeighbours)
+        if (nbRedNeighbours >= nbBlueNeighbours) {
             return CellState.ALIVE_RED;
+        }
         return CellState.ALIVE_BLUE;
     }
 }
