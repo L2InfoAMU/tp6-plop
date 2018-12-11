@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -89,8 +91,6 @@ public class Grid implements Iterable<Cell> {
         return numberOfColumns;
     }
 
-
-    // TODO: Écrire une version correcte de cette méthode.
     private List<Cell> getNeighbours(int rowIndex, int columnIndex) {
         List<Cell> neighbours = new ArrayList<>();
         for (int i = -1; i < 2; i++) {
@@ -102,7 +102,6 @@ public class Grid implements Iterable<Cell> {
         return neighbours;
     }
 
-    // TODO: Écrire une version correcte de cette méthode.
     private int countAliveNeighbours(int rowIndex, int columnIndex) {
         List<Cell> neighbours = getNeighbours(rowIndex, columnIndex);
         int aliveNeighbours = 0;
@@ -113,22 +112,18 @@ public class Grid implements Iterable<Cell> {
         return aliveNeighbours;
     }
 
-    // TODO: Écrire une version correcte de cette méthode.
     private CellState calculateNextState(int rowIndex, int columnIndex) {
         if (!getCell(rowIndex, columnIndex).isAlive()) {
             if (countAliveNeighbours(rowIndex, columnIndex) == 3)
-                return CellState.ALIVE;
+                return getNewCellState(rowIndex, columnIndex);
         } else {
             int aliveNeighbours = countAliveNeighbours(rowIndex, columnIndex);
             if (aliveNeighbours == 2 || aliveNeighbours == 3)
-                return CellState.ALIVE;
+                return getNewCellState(rowIndex, columnIndex);
         }
         return CellState.DEAD;
     }
 
-
-
-    // TODO: Écrire une version correcte de cette méthode.
     private CellState[][] calculateNextStates() {
         CellState[][] nextCellState = new CellState[getNumberOfRows()][getNumberOfColumns()];
         for (int i = 0; i < getNumberOfRows(); i++) {
@@ -139,7 +134,6 @@ public class Grid implements Iterable<Cell> {
         return nextCellState;
     }
 
-    // TODO: Écrire une version correcte de cette méthode.
     private void updateStates(CellState[][] nextState) {
         for (int i = 0; i < getNumberOfRows(); i++) {
             for (int j = 0; j < getNumberOfColumns(); j++) {
@@ -161,7 +155,6 @@ public class Grid implements Iterable<Cell> {
      * reproduction.</li>
      * </ul>
      */
-    // TODO: Écrire une version correcte de cette méthode.
     void updateToNextGeneration() {
         updateStates(calculateNextStates());
     }
@@ -169,7 +162,6 @@ public class Grid implements Iterable<Cell> {
     /**
      * Sets all {@link Cell}s in this {@code Grid} as dead.
      */
-    // TODO: Écrire une version correcte de cette méthode.
     void clear() {
         for (int i = 0; i < getNumberOfRows(); i++) {
             for (int j = 0; j < getNumberOfColumns(); j++) {
@@ -184,15 +176,33 @@ public class Grid implements Iterable<Cell> {
      * @param random {@link Random} instance used to decide if each {@link Cell} is ALIVE or DEAD.
      * @throws NullPointerException if {@code random} is {@code null}.
      */
-    // TODO: Écrire une version correcte de cette méthode.
     void randomGeneration(Random random) {
         if (random == null)
             throw new NullPointerException();
         for (int i = 0; i < getNumberOfRows(); i++) {
             for (int j = 0; j < getNumberOfColumns(); j++) {
                 if (random.nextBoolean())
-                    cells[i][j].setState(CellState.ALIVE);
+                    if (random.nextBoolean())
+                        cells[i][j].setState(CellState.ALIVE_RED);
+                    else
+                        cells[i][j].setState(CellState.ALIVE_BLUE);
             }
         }
+    }
+
+    private CellState getNewCellState(int rowIndex, int columnIndex) {
+        List<Cell> neighbours = getNeighbours(rowIndex, columnIndex);
+        int nbRedNeighbours = 0;
+        int nbBlueNeighbours = 0;
+        for (Cell currentCell : neighbours) {
+            if (currentCell.getState().getColor().equals(Color.RED)) {
+                nbRedNeighbours++;
+            } else {
+                nbBlueNeighbours++;
+            }
+        }
+        if (nbRedNeighbours >= nbBlueNeighbours)
+            return CellState.ALIVE_RED;
+        return CellState.ALIVE_BLUE;
     }
 }
