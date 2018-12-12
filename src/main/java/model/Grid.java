@@ -93,9 +93,9 @@ public class Grid implements Iterable<Cell> {
 
     private List<Cell> getNeighbours(int rowIndex, int columnIndex) {
         List<Cell> neighbours = new ArrayList<>();
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                if (rowIndex + i != rowIndex && columnIndex + j != columnIndex)
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (i != 0 || j != 0)
                     neighbours.add(getCell(rowIndex + i, columnIndex + j));
             }
         }
@@ -197,7 +197,7 @@ public class Grid implements Iterable<Cell> {
         for (Cell currentCell : neighbours) {
             if (currentCell.getState().getColor().equals(Color.RED)) {
                 nbRedNeighbours++;
-            } else {
+            } else if (currentCell.getState().getColor().equals(Color.BLUE)){
                 nbBlueNeighbours++;
             }
         }
